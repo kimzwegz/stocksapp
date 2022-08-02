@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 import plotly.express as px
 import pandas as pd
+from dash.dependencies import Input, Output
 
 
 
@@ -29,15 +30,14 @@ test = html.Div(children=[
     )
 ])
 
-main_tabs_old = html.Div([
-    html.H1('World Wide Equities WWE'),
+main_tabs = html.Div([
     dcc.Tabs(id="main_tabs", value="tab_patent", children=[
         dcc.Tab(label='Stocks', value= 'tab-1'),
         dcc.Tab(label='Indexes', value= 'tab-2')
     ])
 ])
 
-main_tabs = html.Div([dbc.Row([
+main_tabs_example = html.Div([dbc.Row([
         dbc.Col(html.Div("WWE"), width=6),
         dbc.Col(dbc.Button("Primary", color="primary", className="me-1", href='/', external_link=True))]),
         dcc.Tabs(id="main_tabs", value="tab_patent", children=
@@ -50,7 +50,7 @@ main_tabs = html.Div([dbc.Row([
 
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Page 1", href="#")),
+        dbc.NavItem(dbc.NavLink("Home", href="/", external_link=True)),
         dbc.DropdownMenu(
             children=[
                 dbc.DropdownMenuItem("More pages", header=True),
@@ -62,8 +62,9 @@ navbar = dbc.NavbarSimple(
             label="More",
         ),
     ],
-    brand="NavbarSimple",
-    brand_href="#",
+    brand="Stocks",
+    # brand_href="#",
     color="primary",
-    dark=True,
+    dark=True
 )
+
