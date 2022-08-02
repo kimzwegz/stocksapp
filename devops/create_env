@@ -1,0 +1,4 @@
+conda create --prefix ../stocksappenv python=3.9
+conda activate ../stocksappenv
+echo "stocksappenv activated"
+conda install -c conda-forge --file requirements.txt

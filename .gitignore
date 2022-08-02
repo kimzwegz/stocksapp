@@ -1,0 +1,4 @@
+stocksappenv/
+*.csv
+*.xls
+*.xlsx
