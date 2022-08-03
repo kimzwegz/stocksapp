@@ -6,13 +6,13 @@ import plotly.express as px
 import pandas as pd
 from dash.dependencies import Input, Output
 from flask import Flask
-from dashapp.market import market
-# from market import market
+from dashapp.market import market # for main app
+# from market import market # for this file only
 
 
 app = Flask(__name__, template_folder=r'/Users/karimkhalil/Coding/development/stocksapp/flaskapp/templates', static_folder=r'/Users/karimkhalil/Coding/development/stocksapp/flaskapp/static')
-# dash_app = Dash(name="Dashboard", external_stylesheets=[dbc.themes.BOOTSTRAP])
-dash_app = Dash(server=app, name="Dashboard", url_base_pathname="/dash/", external_stylesheets=[dbc.themes.BOOTSTRAP])
+# dash_app = Dash(name="Dashboard", external_stylesheets=[dbc.themes.BOOTSTRAP]) # for this file only
+dash_app = Dash(server=app, name="Dashboard", url_base_pathname="/dash/", external_stylesheets=[dbc.themes.BOOTSTRAP]) # for main app
 
 df = pd.DataFrame({
     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
@@ -61,25 +61,26 @@ main_tabs = html.Div([
     dcc.Tabs(id="main_tabs", value="tab_patent", children=[
         dcc.Tab(label='Stocks', value= 'tab-1'),
         dcc.Tab(label='Indexes', value= 'tab-2')
-    ])
+    ]),
+    html.Div(id='tabs-example-content-1')
 ])
 
 
-# @dash_app.callback(
-#     Output('tabs-content', 'children'),
-#     Input('main_tabs', 'value'))
+@dash_app.callback(
+    Output('tabs-example-content-1', 'children'),
+    Input('main_tabs', 'value'))
 
-# def render_content(tab):
-#     if tab == 'tab-1':
-#         print('tab-1 selected')
-#         return market
-#     elif tab == 'tab-2':
-#         print('tab-2 selected')
-#         return market
+def render_content(tab):
+    if tab == 'tab-1':
+        print('tab-1 selected')
+        return html.Div([dcc.Graph(market)])
+    elif tab == 'tab-2':
+        print('tab-2 selected')
+        return html.Div([dcc.Graph(market)])
 
 
 if __name__ == '__main__':
-    # main_layout = dbc.Container([navbar,main_tabs])
-    main_layout = dbc.Container([market])
+    main_layout = dbc.Container([main_tabs])
+    # main_layout = dbc.Container([market])
     dash_app.layout = test
     dash_app.run_server(debug=True)
