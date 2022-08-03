@@ -5,11 +5,14 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 from dash.dependencies import Input, Output
-from flaskapp import app
-# from dashapp.market import market
+from flask import Flask
+from dashapp.market import market
+# from market import market
 
 
-
+app = Flask(__name__, template_folder=r'/Users/karimkhalil/Coding/development/stocksapp/flaskapp/templates', static_folder=r'/Users/karimkhalil/Coding/development/stocksapp/flaskapp/static')
+# dash_app = Dash(name="Dashboard", external_stylesheets=[dbc.themes.BOOTSTRAP])
+dash_app = Dash(server=app, name="Dashboard", url_base_pathname="/dash/", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 df = pd.DataFrame({
     "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
@@ -18,6 +21,8 @@ df = pd.DataFrame({
 })
 
 fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
+
+test = html.Div([fig])
 
 #####################################################################################
 #################################### EXAMPLES #######################################
@@ -60,32 +65,21 @@ main_tabs = html.Div([
 ])
 
 
-navbar = dbc.NavbarSimple(
-    children=[
-        dbc.NavItem(dbc.NavLink("Home", href="/", external_link=True)),
-        dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem("More pages", header=True),
-                dbc.DropdownMenuItem("Page 2", href="#"),
-                dbc.DropdownMenuItem("Page 3", href="#"),
-            ],
-            nav=True,
-            in_navbar=True,
-            label="More",
-        ),
-    ],
-    brand="Stocks",
-    # brand_href="#",
-    color="primary",
-    dark=True
-)
-
-# @app.callback(
+# @dash_app.callback(
 #     Output('tabs-content', 'children'),
 #     Input('main_tabs', 'value'))
 
-# def render_tab(tab):
+# def render_content(tab):
 #     if tab == 'tab-1':
+#         print('tab-1 selected')
 #         return market
-#     if tab == 'tab-2':
-#         pass
+#     elif tab == 'tab-2':
+#         print('tab-2 selected')
+#         return market
+
+
+if __name__ == '__main__':
+    # main_layout = dbc.Container([navbar,main_tabs])
+    main_layout = dbc.Container([market])
+    dash_app.layout = test
+    dash_app.run_server(debug=True)

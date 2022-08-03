@@ -8,8 +8,8 @@ import dash_bootstrap_components as dbc
 
 # from flask_migrate import Migrate
 # from flask_login import LoginManager
-app = Flask(__name__)
-from dashapp import create_dash_application
+# app = Flask(__name__)
+from dashapp import create_dash_application, app, dash_app
 # from dashapp import df
 
 #############################################################################
@@ -66,12 +66,13 @@ app.config['SECRET_KEY'] = 'mysecret'
 # # app.register_blueprint(error)
 
 
-dash_app = create_dash_application(app)
+
 # dash_app = Dash(server=app, name="Dashboard", url_base_pathname="/dash/", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
 @app.route('/')
 def home():
+    print('home selected')
     return render_template('home.html')
 
 

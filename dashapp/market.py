@@ -5,7 +5,6 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 from dash.dependencies import Input, Output
-from flaskapp import dash_app
 
 from os import pardir, path
 import sys
@@ -40,4 +39,8 @@ df_idx_info = df_idx_all.loc[df_idx_all['symbol'].isin(idx_sym), ['symbol', 'nam
 fig = px.line(df_idx_price, x='datetime', y = 'adjClose', color='name')
 
 
+
+# fig.show()
 market = html.Div(fig)
+if __name__ == '__main__':
+    fig.show()
