@@ -5,6 +5,9 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 from dash.dependencies import Input, Output
+from flaskapp import app
+# from dashapp.market import market
+
 
 
 
@@ -16,19 +19,38 @@ df = pd.DataFrame({
 
 fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
 
-test = html.Div(children=[
-    html.H1(children='Hello Dash'),
+#####################################################################################
+#################################### EXAMPLES #######################################
+#####################################################################################
 
-    html.Div(children='''
-        Dash: A web application framework for your data.
-    '''),
-    dcc.Link(html.Button("LOG_VIEW"), href="/", refresh=True),
+# main_tabs_example = html.Div([dbc.Row([
+#         dbc.Col(html.Div("WWE"), width=6),
+#         dbc.Col(dbc.Button("Primary", color="primary", className="me-1", href='/', external_link=True))]),
+#         dcc.Tabs(id="main_tabs", value="tab_patent", children=
+#         [
+#             dcc.Tab(label='Stocks', value= 'tab-1'),
+#             dcc.Tab(label='Indexes', value= 'tab-2')
+#             ])
+#         ])
 
-    dcc.Graph(
-        id='example-graph',
-        figure=fig
-    )
-])
+# test = html.Div(children=[
+#     html.H1(children='Hello Dash'),
+
+#     html.Div(children='''
+#         Dash: A web application framework for your data.
+#     '''),
+#     dcc.Link(html.Button("LOG_VIEW"), href="/", refresh=True),
+
+#     dcc.Graph(
+#         id='example-graph',
+#         figure=fig
+#     )
+# ])
+
+#####################################################################################
+#####################################################################################
+#####################################################################################
+
 
 main_tabs = html.Div([
     dcc.Tabs(id="main_tabs", value="tab_patent", children=[
@@ -37,16 +59,6 @@ main_tabs = html.Div([
     ])
 ])
 
-main_tabs_example = html.Div([dbc.Row([
-        dbc.Col(html.Div("WWE"), width=6),
-        dbc.Col(dbc.Button("Primary", color="primary", className="me-1", href='/', external_link=True))]),
-        dcc.Tabs(id="main_tabs", value="tab_patent", children=
-        [
-            dcc.Tab(label='Stocks', value= 'tab-1'),
-            dcc.Tab(label='Indexes', value= 'tab-2')
-            ])
-        ])
-        
 
 navbar = dbc.NavbarSimple(
     children=[
@@ -68,3 +80,12 @@ navbar = dbc.NavbarSimple(
     dark=True
 )
 
+# @app.callback(
+#     Output('tabs-content', 'children'),
+#     Input('main_tabs', 'value'))
+
+# def render_tab(tab):
+#     if tab == 'tab-1':
+#         return market
+#     if tab == 'tab-2':
+#         pass

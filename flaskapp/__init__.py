@@ -2,6 +2,8 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, redirect
+from dash import Dash
+import dash_bootstrap_components as dbc
 
 
 # from flask_migrate import Migrate
@@ -64,7 +66,8 @@ app.config['SECRET_KEY'] = 'mysecret'
 # # app.register_blueprint(error)
 
 
-create_dash_application(app)
+dash_app = create_dash_application(app)
+# dash_app = Dash(server=app, name="Dashboard", url_base_pathname="/dash/", external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
 @app.route('/')
