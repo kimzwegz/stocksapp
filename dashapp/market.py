@@ -41,6 +41,10 @@ fig = px.line(df_idx_price, x='datetime', y = 'adjClose', color='name')
 
 
 # fig.show()
-market = html.Div(fig)
+market = html.Div([
+            html.H3('Global Indexes'),
+            dcc.Graph(figure=fig)])
+
+
 if __name__ == '__main__':
     fig.show()

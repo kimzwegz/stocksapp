@@ -73,10 +73,10 @@ main_tabs = html.Div([
 def render_content(tab):
     if tab == 'tab-1':
         print('tab-1 selected')
-        return html.Div([dcc.Graph(market)])
+        return market
     elif tab == 'tab-2':
         print('tab-2 selected')
-        return html.Div([dcc.Graph(market)])
+        return market
 
 
 if __name__ == '__main__':
