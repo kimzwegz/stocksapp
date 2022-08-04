@@ -62,12 +62,13 @@ main_tabs = html.Div([
         dcc.Tab(label='Stocks', value= 'tab-1'),
         dcc.Tab(label='Indexes', value= 'tab-2')
     ]),
-    html.Div(id='tabs-example-content-1')
+    html.H1(),
+    dbc.Spinner([html.Div(id='main-tab-content')], fullscreen=True)
 ])
 
 
 @dash_app.callback(
-    Output('tabs-example-content-1', 'children'),
+    Output('main-tab-content', 'children'),
     Input('main_tabs', 'value'))
 
 def render_content(tab):

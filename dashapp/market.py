@@ -30,6 +30,7 @@ stock = DB_mongo._CLIENT.db_fin
 mongo_stock = DB_mongo(stock)
 mongo_stock.db.tables
 
+print('getting all index data from mongodb')
 df_idx_all = mongo_stock.get_df(mongo_stock.db.idx_all)
 df_idx_price = mongo_stock.get_df(mongo_stock.db.idx_price)
 df_idx_price = df_idx_price.merge(df_idx_all[['symbol', 'name']])
@@ -37,13 +38,14 @@ idx_sym = mongo_stock.get_unique(mongo_stock.db.idx_price, 'symbol')
 # idx_sym = mongo_stock.db.idx_price.distinct('symbol')
 df_idx_info = df_idx_all.loc[df_idx_all['symbol'].isin(idx_sym), ['symbol', 'name']]
 fig = px.line(df_idx_price, x='datetime', y = 'adjClose', color='name')
-
+print('figure rendered')
 
 
 # fig.show()
 market = html.Div([
             html.H3('Global Indexes'),
-            dcc.Graph(figure=fig)])
+            dcc.Graph(figure=fig)
+            ])
 
 
 if __name__ == '__main__':
