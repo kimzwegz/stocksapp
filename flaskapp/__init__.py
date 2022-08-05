@@ -9,7 +9,8 @@ import dash_bootstrap_components as dbc
 # from flask_migrate import Migrate
 # from flask_login import LoginManager
 # app = Flask(__name__)
-from dashapp import create_dash_application, app, dash_app
+from dashapp.instance import app, dash_app
+from dashapp.tabs import navbar, main_tabs
 # from dashapp import df
 
 #############################################################################
@@ -21,6 +22,9 @@ from dashapp import create_dash_application, app, dash_app
 # export SECRET_KEY=mysecret
 # set SECRET_KEY=mysecret
 app.config['SECRET_KEY'] = 'mysecret'
+
+main_layout = dbc.Container([navbar,main_tabs])
+dash_app.layout = main_layout
 
 #################################
 ### DATABASE SETUPS ############
