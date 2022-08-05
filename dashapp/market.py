@@ -51,14 +51,15 @@ print('figure rendered')
 # fig.show()
 
 market = html.Div([
-            html.H3('Global Indexes'),
+            html.H3(id= 'idx-symbol'),
             dcc.Dropdown(id='market-idx-dropdown', options = market_idx_dropdown),
             dcc.Graph(id = 'market-idx-graph', figure={})
             ])
 
 @dash_app.callback(
-    Output(component_id='market-idx-graph', component_property='figure'),
-    Input(component_id='market-idx-dropdown', component_property='value'),
+    [Output(component_id='market-idx-graph', component_property='figure'),
+    Output(component_id='idx-symbol', component_property='children')],
+    [Input(component_id='market-idx-dropdown', component_property='value')],
     prevent_initial_call=False
 )
 
@@ -66,7 +67,7 @@ def drop_down(option):
     df_fig = df_idx_price.loc[df_idx_price['symbol'] == option]
     fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
     print(option)
-    return fig
+    return fig ,option
 
 if __name__ == '__main__':
     fig.show()
