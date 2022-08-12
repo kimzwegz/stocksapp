@@ -5,6 +5,7 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 from dash.dependencies import Input, Output
+from datetime import date
 
 from dashapp.instance import dash_app
 # from dashapp import dash_app
@@ -53,21 +54,47 @@ print('figure rendered')
 market = html.Div([
             html.H3(id= 'idx-symbol'),
             dcc.Dropdown(id='market-idx-dropdown', options = market_idx_dropdown),
-            dcc.Graph(id = 'market-idx-graph', figure={})
-            ])
+            html.Br(),
+            html.Div(id='div_date', children=[]),
+            dcc.Graph(id = 'market-idx-graph', figure={}),
+            dcc.DatePickerRange(
+                                id='idx-date-picker',
+                                min_date_allowed=date(1995, 8, 5),
+                                max_date_allowed=date(2017, 9, 19),
+                                initial_visible_month=date(2017, 8, 5),
+                                end_date=date(2017, 8, 25)
+                                )
+])
+
 
 @dash_app.callback(
     [Output(component_id='market-idx-graph', component_property='figure'),
-    Output(component_id='idx-symbol', component_property='children')],
+    Output(component_id='idx-symbol', component_property='children'),
+    Output(component_id='div_date', component_property='children')],
     [Input(component_id='market-idx-dropdown', component_property='value')],
     prevent_initial_call=False
 )
 
 def drop_down(option):
     df_fig = df_idx_price.loc[df_idx_price['symbol'] == option]
+    
+    date_min_str = pd.to_datetime(df_fig['datetime'].idxmin()).strftime("%m/%d/%Y")
+    date_max_str = pd.to_datetime(df_fig['datetime'].idxmax()).strftime("%m/%d/%Y")
+    
+    date_min = pd.to_datetime(df_fig['datetime'].idxmin()).strftime("%m/%d/%Y")
+    date_max = pd.to_datetime(df_fig['datetime'].idxmax()).strftime("%m/%d/%Y")
+
+
+    print(f'selection is {option} from {date_min_str} to {date_max_str}\n')
     fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
-    print(option)
-    return fig ,option
+    html_date  = dcc.DatePickerRange(
+                                id='idx-date-picker2',
+                                min_date_allowed=date_min,
+                                max_date_allowed=date_max,
+                                initial_visible_month=date_min,
+                                end_date=date_max
+                                )
+    return fig ,option, html_date
 
 if __name__ == '__main__':
     fig.show()
