@@ -71,7 +71,7 @@ market = html.Div([
 ])
 
 html_date  = dbc.Row([dbc.Col(dcc.DatePickerRange(
-                            id='idx-date-picker2',
+                            id='idx-date-picker',
                             min_date_allowed=date(1970, 1, 1),
                             max_date_allowed=date(2022, 12, 30),
                             initial_visible_month=date(2022, 12, 30),
@@ -92,46 +92,46 @@ html_date  = dbc.Row([dbc.Col(dcc.DatePickerRange(
 
 def drop_down(option):
     df_fig = df_idx_price.loc[df_idx_price['symbol'] == option]
-    
-    date_min_str = pd.to_datetime(df_fig['datetime'].idxmin()).strftime("%m/%d/%Y")
-    date_max_str = pd.to_datetime(df_fig['datetime'].idxmax()).strftime("%m/%d/%Y")
-    
-    date_min = pd.to_datetime(df_fig['datetime'].idxmin()).strftime("%m/%d/%Y")
-    date_max = pd.to_datetime(df_fig['datetime'].idxmax()).strftime("%m/%d/%Y")
 
-    df_fig_store = df_fig[['symbol', 'name' ,'datetime', 'month' , 'year' , 'adjClose']]
-    df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%m-%d-%Y")
-
+    # cols = ['symbol', 'name' ,'datetime', 'month' , 'year' , 'adjClose']
+    # df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%m-%d-%Y")
+    cols = [i for i in df_fig.columns if i != "_id"]
+    df_fig_store = df_fig[cols]
+    df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%Y-%m-%d")
+    print(df_fig_store.info())
 
     dict_fig = df_fig_store.to_dict('records')
+    for i in dict_fig[0]:
+        print(i , dict_fig[0][i], type(dict_fig[0][i]))
 
-    print(f'selection is {option} from {date_min_str} to {date_max_str}\n')
+    print(f'selection is {option}\n')
     fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
-
-
 
     print(type(dict_fig))
     return fig ,option, html_date, dict_fig
 
 @dash_app.callback(
     [Output(component_id='store-out', component_property='children')],
-    [State(component_id='idx-date-picker2', component_property='start_date'),
-    State(component_id='idx-date-picker2', component_property='end_date'),
+    [State(component_id='idx-date-picker', component_property='start_date'),
+    State(component_id='idx-date-picker', component_property='end_date'),
+    State(component_id='memory-test', component_property='data'),
     Input(component_id='btn-idx-date', component_property='n_clicks')],
-    prevent_initial_call=True)
+    prevent_initial_call=True, preventupdate=True)
 
-def store(start_date, end_date, n_clicks):
-    if start_date is not None:
-        start = start_date
-    if end_date is not None:
-        end = end_date
-    if n_clicks is None:
-        print("Not clicked.")
-    else:
-        output = [f'columns found- start {start} {end}']
+def store(start_date, end_date, data, n_clicks):
+    # for i in data[0]:
+    #     print(i , data[0][i], type(data[0][i]))
+    df = pd.DataFrame(data)
+    # df['datetime'] = df['datetime'].to_datetime()
+    print(df.info())
+    shape = df.shape
+    if start_date is not None and end_date is not None and n_clicks is not None:
+        output = [f'{shape[0]} rows & {shape[1]} columns found- start {start_date} {end_date}']
         print(output, f"Clicked {n_clicks} times.")
+        print(start_date, end_date)
         return output
-    print(start, end)
+    else:
+        return ['no selection']
     # df = pd.DataFrame(data)
     # shape = df.shape
 
