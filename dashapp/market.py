@@ -36,6 +36,8 @@ mongo_stock.db.tables
 
 print('getting all index data from mongodb')
 df_idx_all = mongo_stock.get_df(mongo_stock.db.idx_all)
+cols = [i for i in df_idx_all.columns if i != '_id']
+df_idx_all = df_idx_all.loc[:,cols]
 df_idx_price = mongo_stock.get_df(mongo_stock.db.idx_price)
 df_idx_price = df_idx_price.merge(df_idx_all[['symbol', 'name']])
 idx_sym = mongo_stock.get_unique(mongo_stock.db.idx_price, 'symbol')
@@ -63,16 +65,18 @@ market = html.Div([
                                 max_date_allowed=date(2017, 9, 19),
                                 initial_visible_month=date(2017, 8, 5),
                                 end_date=date(2017, 8, 25)
-                                )
+                                ),
+            dcc.Store(id='memory-test', data=[], storage_type='memory')
 ])
 
 
 @dash_app.callback(
     [Output(component_id='market-idx-graph', component_property='figure'),
     Output(component_id='idx-symbol', component_property='children'),
-    Output(component_id='div_date', component_property='children')],
+    Output(component_id='div_date', component_property='children'),
+    Output(component_id='memory-test', component_property='data')],
     [Input(component_id='market-idx-dropdown', component_property='value')],
-    prevent_initial_call=False
+    prevent_initial_call=True
 )
 
 def drop_down(option):
@@ -84,6 +88,11 @@ def drop_down(option):
     date_min = pd.to_datetime(df_fig['datetime'].idxmin()).strftime("%m/%d/%Y")
     date_max = pd.to_datetime(df_fig['datetime'].idxmax()).strftime("%m/%d/%Y")
 
+    df_fig_store = df_fig[['symbol', 'name' ,'datetime', 'month' , 'year' , 'adjClose']]
+    df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%m-%d-%Y")
+
+
+    dict_fig = df_fig_store.to_dict('records')
 
     print(f'selection is {option} from {date_min_str} to {date_max_str}\n')
     fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
@@ -94,7 +103,9 @@ def drop_down(option):
                                 initial_visible_month=date_min,
                                 end_date=date_max
                                 )
-    return fig ,option, html_date
+
+    print(type(dict_fig))
+    return fig ,option, html_date, dict_fig
 
 if __name__ == '__main__':
     fig.show()
