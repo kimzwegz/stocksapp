@@ -5,3 +5,4 @@ stocksappenv/
 __pycache__/
 dashapp/__pycache__/
 flaskapp/__pycache__/
+__pycache__/
