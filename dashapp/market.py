@@ -77,7 +77,7 @@ html_date  = dbc.Row([dbc.Col(dcc.DatePickerRange(
                             initial_visible_month=date(2022, 12, 30),
                             end_date=date(2022, 12, 30)
                             )),
-                    dbc.Col(dbc.Button('Submit'))
+                    dbc.Col(dbc.Button('Submit', id="btn-idx-date", n_clicks=0))
                     ],
                     )
 
@@ -115,22 +115,25 @@ def drop_down(option):
 
 @dash_app.callback(
     [Output(component_id='store-out', component_property='children')],
-    [Input(component_id='idx-date-picker2', component_property='start_date'),
-    Input(component_id='idx-date-picker2', component_property='end_date')],
+    [State(component_id='idx-date-picker2', component_property='start_date'),
+    State(component_id='idx-date-picker2', component_property='end_date'),
+    Input(component_id='btn-idx-date', component_property='n_clicks')],
     prevent_initial_call=True)
 
-def store(start_date, end_date):
+def store(start_date, end_date, n_clicks):
     if start_date is not None:
         start = start_date
     if end_date is not None:
         end = end_date
-
+    if n_clicks is None:
+        print("Not clicked.")
+    else:
+        output = [f'columns found- start {start} {end}']
+        print(output, f"Clicked {n_clicks} times.")
+        return output
     print(start, end)
     # df = pd.DataFrame(data)
     # shape = df.shape
-    output = [f'columns found- start {start} {end}']
-    print(output)
-    return output
 
 
 if __name__ == '__main__':
