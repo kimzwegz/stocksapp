@@ -59,7 +59,6 @@ html_date  = html.Div([dcc.DatePickerRange(
                             initial_visible_month=date(2000, 1, 1),
                             end_date=date(2022, 12, 30)
                             ),
-                    html.Br(),
                     dbc.Button('Submit', id="btn-idx-date", n_clicks=0)
                     ],
                     )
@@ -71,6 +70,14 @@ market = html.Div([
             html.Div(id='div_date', children=[]),
             html_date,
             dcc.Graph(id = 'market-idx-graph', figure={}),
+            # dcc.Graph(id = 'market-idx-graph2', figure={}),
+            # dcc.DatePickerRange(
+            #                     id='idx-date-picker',
+            #                     min_date_allowed=date(1970, 1, 1),
+            #                     max_date_allowed=date(2022, 12, 30),
+            #                     initial_visible_month=date(2022, 12, 30),
+            #                     end_date=date(2022, 12, 30)
+            #                     ),
             html.H4(id='store-out'),
             dcc.Store(id='memory-test', data=[], storage_type='memory')
 ])
