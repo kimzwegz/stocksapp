@@ -11,6 +11,7 @@ scikit-learn
 jsonschema
 dash
 dash-bootstrap-components
+jupyter-dash
 plotly
 flask
 flask-sqlalchemy

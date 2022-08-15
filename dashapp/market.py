@@ -52,95 +52,59 @@ print('figure rendered')
 
 
 # fig.show()
+html_date  = html.Div([dcc.DatePickerRange(
+                            id='idx-date-picker',
+                            min_date_allowed=date(1970, 1, 1),
+                            max_date_allowed=date(2022, 12, 30),
+                            initial_visible_month=date(2000, 1, 1),
+                            end_date=date(2022, 12, 30)
+                            ),
+                    html.Br(),
+                    dbc.Button('Submit', id="btn-idx-date", n_clicks=0)
+                    ],
+                    )
 
 market = html.Div([
             html.H3(id= 'idx-symbol'),
             dcc.Dropdown(id='market-idx-dropdown', options = market_idx_dropdown),
             html.Br(),
             html.Div(id='div_date', children=[]),
+            html_date,
             dcc.Graph(id = 'market-idx-graph', figure={}),
-            dcc.Graph(id = 'market-idx-graph2', figure={}),
-            # dcc.DatePickerRange(
-            #                     id='idx-date-picker',
-            #                     min_date_allowed=date(1970, 1, 1),
-            #                     max_date_allowed=date(2022, 12, 30),
-            #                     initial_visible_month=date(2022, 12, 30),
-            #                     end_date=date(2022, 12, 30)
-            #                     ),
             html.H4(id='store-out'),
             dcc.Store(id='memory-test', data=[], storage_type='memory')
 ])
 
-html_date  = dbc.Row([dbc.Col(dcc.DatePickerRange(
-                            id='idx-date-picker',
-                            min_date_allowed=date(1970, 1, 1),
-                            max_date_allowed=date(2022, 12, 30),
-                            initial_visible_month=date(2022, 12, 30),
-                            end_date=date(2022, 12, 30)
-                            )),
-                    dbc.Col(dbc.Button('Submit', id="btn-idx-date", n_clicks=0))
-                    ],
-                    )
 
 @dash_app.callback(
     [Output(component_id='market-idx-graph', component_property='figure'),
-    Output(component_id='idx-symbol', component_property='children'),
-    Output(component_id='div_date', component_property='children'),
-    Output(component_id='memory-test', component_property='data')],
-    [Input(component_id='market-idx-dropdown', component_property='value')],
+    Output(component_id='idx-symbol', component_property='children')],
+    [State(component_id='market-idx-dropdown', component_property='value'),
+    State(component_id='idx-date-picker', component_property='start_date'),
+    State(component_id='idx-date-picker', component_property='end_date'),
+    Input(component_id='btn-idx-date', component_property='n_clicks')],
     prevent_initial_call=True, preventupdate=True
 )
 
-def drop_down(option):
-    df_fig = df_idx_price.loc[df_idx_price['symbol'] == option]
+def drop_down(option, start_date, end_date, n_clicks):
 
-    # cols = ['symbol', 'name' ,'datetime', 'month' , 'year' , 'adjClose']
-    # df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%m-%d-%Y")
-    cols = [i for i in df_fig.columns if i != "_id"]
-    df_fig_store = df_fig[cols]
-    df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%Y-%m-%d")
-    print(df_fig_store.info())
-
-    dict_fig = df_fig_store.to_dict('records')
-    for i in dict_fig[0]:
-        print(i , dict_fig[0][i], type(dict_fig[0][i]))
-
-    print(f'selection is {option}\n')
-    fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
-
-    print(type(dict_fig))
-    return fig ,option, html_date, dict_fig
-
-@dash_app.callback(
-    Output(component_id='market-idx-graph2', component_property='figure'),
-    [State(component_id='idx-date-picker', component_property='start_date'),
-    State(component_id='idx-date-picker', component_property='end_date'),
-    State(component_id='memory-test', component_property='data'),
-    Input(component_id='btn-idx-date', component_property='n_clicks')],
-    prevent_initial_call=True, preventupdate=True)
-
-def store(start_date, end_date, data, n_clicks):
-    # for i in data[0]:
-    #     print(i , data[0][i], type(data[0][i]))
     if start_date is not None and end_date is not None and n_clicks is not None:
-        df = pd.DataFrame(data)
-        df['datetime'] = pd.to_datetime(df['datetime'])
-        df_fig = df.loc[df['datetime'].between(start_date, end_date)]
+        print(option)
+        df_fig = df_idx_price.loc[(df_idx_price['symbol'] == option) & df_idx_price['datetime'].between(start_date, end_date)]
+        cols = [i for i in df_fig.columns if i != "_id"]
+        df_fig_store = df_fig[cols]
+        df_fig_store['datetime'] = df_fig_store['datetime'].dt.strftime("%Y-%m-%d")
+        print(df_fig_store.info())
 
+        dict_fig_store = df_fig_store.to_dict('records')
+        for i in dict_fig_store[0]:
+            print(i , dict_fig_store[0][i], type(dict_fig_store[0][i]))
+
+        print(f'selection is {option}\n')
         fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
-        print(df_fig.info())
-        shape = df_fig.shape
-        output = [f'{shape[0]} rows & {shape[1]} columns found- start {start_date} {end_date}']
-        print(output, f"Clicked {n_clicks} times.")
-        print(start_date, type(start_date), end_date, type(end_date))
-        # fig.show()
-    else:
-        fig = px.line(None)
+        print(type(dict_fig_store))
+        return fig ,option
 
-    return fig
-        # return ['no selection']
-    # df = pd.DataFrame(data)
-    # shape = df.shape
 
 
 if __name__ == '__main__':

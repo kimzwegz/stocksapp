@@ -76,8 +76,8 @@ navbar = dbc.NavbarSimple(
 
 main_tabs = html.Div([
     dcc.Tabs(id="main_tabs", value="tab_patent", children=[
-        dcc.Tab(label='Stocks', value= 'tab-1'),
-        dcc.Tab(label='Indexes', value= 'tab-2')
+        dcc.Tab(label='Markets', value= 'tab-1'),
+        dcc.Tab(label='Stocks', value= 'tab-2')
     ]),
     html.H1(),
     dbc.Spinner([html.Div(id='main-tab-content')], fullscreen=True)
@@ -94,7 +94,7 @@ def render_content(tab):
         return market
     elif tab == 'tab-2':
         print('tab-2 selected')
-        return market
+        
 
 
 
