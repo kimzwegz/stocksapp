@@ -59,6 +59,7 @@ market = html.Div([
             html.Br(),
             html.Div(id='div_date', children=[]),
             dcc.Graph(id = 'market-idx-graph', figure={}),
+            dcc.Graph(id = 'market-idx-graph2', figure={}),
             # dcc.DatePickerRange(
             #                     id='idx-date-picker',
             #                     min_date_allowed=date(1970, 1, 1),
@@ -111,7 +112,7 @@ def drop_down(option):
     return fig ,option, html_date, dict_fig
 
 @dash_app.callback(
-    [Output(component_id='store-out', component_property='children')],
+    Output(component_id='market-idx-graph2', component_property='figure'),
     [State(component_id='idx-date-picker', component_property='start_date'),
     State(component_id='idx-date-picker', component_property='end_date'),
     State(component_id='memory-test', component_property='data'),
@@ -121,17 +122,23 @@ def drop_down(option):
 def store(start_date, end_date, data, n_clicks):
     # for i in data[0]:
     #     print(i , data[0][i], type(data[0][i]))
-    df = pd.DataFrame(data)
-    # df['datetime'] = df['datetime'].to_datetime()
-    print(df.info())
-    shape = df.shape
     if start_date is not None and end_date is not None and n_clicks is not None:
+        df = pd.DataFrame(data)
+        df['datetime'] = pd.to_datetime(df['datetime'])
+        df_fig = df.loc[df['datetime'].between(start_date, end_date)]
+
+        fig = px.line(df_fig, x='datetime', y = 'adjClose', color='name')
+        print(df_fig.info())
+        shape = df_fig.shape
         output = [f'{shape[0]} rows & {shape[1]} columns found- start {start_date} {end_date}']
         print(output, f"Clicked {n_clicks} times.")
-        print(start_date, end_date)
-        return output
+        print(start_date, type(start_date), end_date, type(end_date))
+        # fig.show()
     else:
-        return ['no selection']
+        fig = px.line(None)
+
+    return fig
+        # return ['no selection']
     # df = pd.DataFrame(data)
     # shape = df.shape
 
