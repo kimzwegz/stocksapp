@@ -2,7 +2,8 @@ stocksappenv/
 *.csv
 *.xls
 *.xlsx
+*.pyc
 __pycache__/
 dashapp/__pycache__/
 flaskapp/__pycache__/
-__pycache__/
+project_package/__pycache__/

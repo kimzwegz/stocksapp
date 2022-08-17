@@ -19,5 +19,18 @@ from mypackages import DB_mongo
 from pymongo import MongoClient, ASCENDING , DESCENDING
 import pandas as pd
 
+
+def get_dropdown_label(dashdropdown, some):
+    """
+    get label from dropdown menu dict value label pairs
+    
+    """
+    for i,j in enumerate(dashdropdown):
+        if j['value'] == some:
+            # print(i)
+            index = i
+    # print(index)
+    return dashdropdown[index]['label']
+
 print('project package imported')
 
